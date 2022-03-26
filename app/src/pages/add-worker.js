@@ -30,7 +30,7 @@ const AddWorker = () => {
       name: '',
       phone: '',
       aadhar: '',
-      password: '',
+     
       photo: null
     },
     onSubmit: async (values, actions) => {
@@ -42,7 +42,7 @@ const AddWorker = () => {
         name: '',
         phone: '',
         aadhar: '',
-        password: '',
+       
         photo: null
       })
     }
@@ -107,27 +107,7 @@ const AddWorker = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id='password'
-                label='Password'
-                type='password'
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                error={formik.touched.password && !!formik.errors.password}
-                helperText={formik.touched.password && formik.errors.password}
-                placeholder='Password...'
-                sx={{ '& .MuiOutlinedInput-root': { alignItems: 'baseline' } }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <MessageOutline />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
+
             <Grid item xs={12}>
               <input type='file' name='photo' onChange={e => formik.setFieldValue('photo', e.target.files[0])} />
               {formik.values.photo && <ImagePreview file={formik.values.photo} />}
