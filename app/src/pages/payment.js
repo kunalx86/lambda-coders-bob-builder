@@ -14,13 +14,49 @@ import TableContainer from '@mui/material/TableContainer'
 import ChevronUp from 'mdi-material-ui/ChevronUp'
 import ChevronDown from 'mdi-material-ui/ChevronDown'
 
+function loadScript(src) {
+  return new Promise(resolve => {
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = () => {
+      resolve(true)
+    }
+    script.onerror = () => {
+      resolve(false)
+    }
+    document.body.appendChild(script)
+  })
+}
+
+async function displayRazorpay(amount, name) {
+  const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+  if (!res) {
+    alert('Razorpay SDK failed to load. Are you online?')
+
+    return
+  }
+
+  const options = {
+    key: 'rzp_test_plSZYOKdoMS8rp',
+    currency: 'INR',
+    amount,
+    name: 'Monthly Wages',
+    description: `Wages for ${name}`,
+    handler: function (response) {
+      alert(response.razorpay_payment_id)
+      alert(response.razorpay_order_id)
+      alert(response.razorpay_signature)
+    }
+  }
+  const paymentObject = new window.Razorpay(options)
+  paymentObject.open()
+}
+
 const Payment = () => {
   return (
-    <Grid>
+    <Grid justifyContent='center' justifyItems='center' alignContent='center' alignItems='center'>
       <TableCollapsible />
-      <Grid item>
-        <Button>Sanction Wages</Button>
-      </Grid>
     </Grid>
   )
 }
@@ -55,6 +91,9 @@ const Row = props => {
   // ** State
   const [open, setOpen] = useState(false)
 
+  // Name, basic pay, incentives, total pay
+  // Safety %, Average Working hours, Attendance PM
+
   return (
     <>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -69,7 +108,9 @@ const Row = props => {
         <TableCell align='right'>{row.calories}</TableCell>
         <TableCell align='right'>{row.fat}</TableCell>
         <TableCell align='right'>{row.carbs}</TableCell>
-        <TableCell align='right'>{row.protein}</TableCell>
+        <TableCell align='right'>
+          <Button onClick={() => displayRazorpay(5000, 'Boii')}>Sanction Wages</Button>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={6} sx={{ py: '0 !important' }}>
@@ -81,10 +122,9 @@ const Row = props => {
               <Table size='small' aria-label='purchases'>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align='right'>Amount</TableCell>
-                    <TableCell align='right'>Total price ($)</TableCell>
+                    <TableCell>Safety Percentage</TableCell>
+                    <TableCell>Average Working Hours</TableCell>
+                    <TableCell align='right'>Attendance Per Month</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -95,7 +135,6 @@ const Row = props => {
                       </TableCell>
                       <TableCell>{historyRow.customerId}</TableCell>
                       <TableCell align='right'>{historyRow.amount}</TableCell>
-                      <TableCell align='right'>{Math.round(historyRow.amount * row.price * 100) / 100}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -109,11 +148,11 @@ const Row = props => {
 }
 
 const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5)
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9)
 ]
 
 const TableCollapsible = () => {
@@ -123,11 +162,11 @@ const TableCollapsible = () => {
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align='right'>Calories</TableCell>
-            <TableCell align='right'>Fat (g)</TableCell>
-            <TableCell align='right'>Carbs (g)</TableCell>
-            <TableCell align='right'>Protein (g)</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell align='right'>Basic Pay</TableCell>
+            <TableCell align='right'>Incentives Pay</TableCell>
+            <TableCell align='right'>Total Pay</TableCell>
+            <TableCell align='right'>Make Payment</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

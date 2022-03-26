@@ -8,56 +8,104 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein }
-}
-
-const rows = [
-  createData(
-    'Frozen yoghurt',
-    <Button size='small' variant='outlined'>
-      Yes
-    </Button>
-  )
-]
+import Tesseract from 'tesseract.js'
+import { Loading } from 'mdi-material-ui'
 
 function BasicTable() {
+  const [file, setFile] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
+  const [texts, setTexts] = React.useState([])
+
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Present</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component='th' scope='row'>
-                  {row.name}
-                </TableCell>
-                <TableCell component='th' scope='row'>
-                  <Checkbox />
-                </TableCell>
+      <Stack direction='column' alignItems='center'>
+        <TableContainer
+          sx={{
+            width: 300
+          }}
+          component={Paper}
+        >
+          <Table aria-label='simple table'>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Present</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {[].map(row => (
+                <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                  <TableCell component='th' scope='row'>
+                    {row.name}
+                  </TableCell>
+                  <TableCell component='th' scope='row'>
+                    <Checkbox />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Stack>
       <br />
       <br />
 
-      <Stack direction='row' alignItems='center' spacing={2}>
-        <label htmlFor='contained-button-file'>
-          {/* <Input accept="image/*" id="contained-button-file" multiple type="file" /> */}
-          Present data by uploading sheet of paper
-          <Button ml={2} variant='contained' component='span'>
-            Upload
-          </Button>
-        </label>
+      <Stack direction='column' alignItems='center' spacing={2}>
+        <label htmlFor='contained-button-file'>Present data by uploading sheet of paper</label>
+        <Grid>
+          <input onChange={e => setFile(e.target.files[0])} type='file' />
+        </Grid>
+        <Button
+          onClick={() => {
+            setLoading(true)
+            Tesseract.recognize(file, 'eng', {
+              logger: m => console.log(m)
+            })
+              .then(res => {
+                console.log(res.data)
+                setTexts(res.data.lines.map(line => line.text))
+              })
+              .catch(err => console.error(err))
+              .finally(() => setLoading(false))
+          }}
+        >
+          Perform OCR
+        </Button>
+        <Button onClick={() => setText('')}>Clear Results</Button>
+        {loading ? (
+          <Loading />
+        ) : (
+          <TableContainer
+            sx={{
+              width: 200
+            }}
+            component={Paper}
+          >
+            <Table aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Names in List</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {texts.map((text, idx) => (
+                  <TableRow
+                    key={idx}
+                    sx={{
+                      '&:last-of-type td, &:last-of-type th': {
+                        border: 0
+                      }
+                    }}
+                  >
+                    <TableCell component='th' scope='row'>
+                      {text}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Stack>
     </>
   )

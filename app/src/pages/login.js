@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
 import InputAdornment from '@mui/material/InputAdornment'
+import { Loading } from 'mdi-material-ui'
 
 // ** Icons Imports
 import MessageOutline from 'mdi-material-ui/MessageOutline'
@@ -88,8 +89,8 @@ const LoginForm = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button type='submit' variant='contained' size='large'>
-                Submit
+              <Button disabled={formik.isSubmitting} type='submit' variant='contained' size='large'>
+                {formik.isSubmitting && <Loading />}Submit
               </Button>
             </Grid>
           </Grid>

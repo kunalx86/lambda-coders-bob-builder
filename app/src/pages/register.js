@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material'
+import { Loading } from 'mdi-material-ui'
 
 // ** Icons Imports
 import AccountOutline from 'mdi-material-ui/AccountOutline'
@@ -138,8 +139,8 @@ const RegisterForm = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Button type='submit' variant='contained' size='large'>
-                Submit
+              <Button disabled={formik.isSubmitting} type='submit' variant='contained' size='large'>
+                {formik.isSubmitting && <Loading />}Submit
               </Button>
             </Grid>
           </Grid>

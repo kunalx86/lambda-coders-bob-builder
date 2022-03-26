@@ -37,6 +37,7 @@
     "react-popper": "^2.2.5",
     "react-query": "^3.34.18",
     "rooks": "^5.10.3",
+    "tesseract.js": "^2.1.5",
     "yup": "^0.32.11"
   },
   "devDependencies": {
