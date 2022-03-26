@@ -6,7 +6,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useFormik } from 'formik'
-import { AccountOutline, FormatLineSpacing, MessageOutline, Phone } from 'mdi-material-ui'
+import { AccountOutline, Phone } from 'mdi-material-ui'
 import { useMutation } from 'react-query'
 import { useState } from 'react'
 import { axios } from 'src/axios'
@@ -30,7 +30,6 @@ const AddWorker = () => {
       name: '',
       phone: '',
       aadhar: '',
-      password: '',
       photo: null
     },
     onSubmit: async (values, actions) => {
@@ -42,7 +41,6 @@ const AddWorker = () => {
         name: '',
         phone: '',
         aadhar: '',
-        password: '',
         photo: null
       })
     }
@@ -104,27 +102,6 @@ const AddWorker = () => {
                 helperText={formik.touched.aadhar && formik.errors.aadhar}
                 InputProps={{
                   startAdornment: <InputAdornment position='start'></InputAdornment>
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id='password'
-                label='Password'
-                type='password'
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                error={formik.touched.password && !!formik.errors.password}
-                helperText={formik.touched.password && formik.errors.password}
-                placeholder='Password...'
-                sx={{ '& .MuiOutlinedInput-root': { alignItems: 'baseline' } }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <MessageOutline />
-                    </InputAdornment>
-                  )
                 }}
               />
             </Grid>
