@@ -9,19 +9,46 @@ export const useNavigation = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      setNavItems(prev =>
-        prev.filter(item => item.title.toLowerCase().contains('login') || item.title.lower().contains('register'))
-      )
       setNavItems(prev => [
         {
           title: 'Dashboard',
           icon: ViewDashboard,
-          path: '/dashboard/'
+          path: '/dashboard'
         },
         {
-          title: 'Workload Management',
+          title: 'Workload',
           icon: ViewDashboard,
           path: '/workload-management'
+        },
+        {
+          title: 'Workers',
+          icon: ViewDashboard,
+          path: '/workers'
+        },
+        {
+          title: 'Add Worker',
+          icon: ViewDashboard,
+          path: '/add-worker'
+        },
+        {
+          title: 'Edit Workers',
+          icon: ViewDashboard,
+          path: '/edit-workers'
+        },
+        {
+          title: 'Projects',
+          icon: ViewDashboard,
+          path: '/projects'
+        },
+        {
+          title: 'Attendance',
+          icon: ViewDashboard,
+          path: '/attendance'
+        },
+        {
+          title: 'Maps',
+          icon: ViewDashboard,
+          path: '/map'
         }
       ])
     } else {
@@ -35,11 +62,6 @@ export const useNavigation = () => {
           title: 'Register',
           icon: AccountPlusOutline,
           path: '/register'
-        },
-        {
-          title: 'Dashboard',
-          icon: ViewDashboard,
-          path: '/dashboard/'
         }
       ])
     }

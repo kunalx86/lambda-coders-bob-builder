@@ -17,8 +17,6 @@ export const AuthProvider = ({ children }) => {
 
   const [{ user, userType, isLoggedIn, error }, setState] = useState({
     user: null,
-    userType: 'Contractor',
-
     userType: null,
     isLoggedIn: false,
     error: null
@@ -26,39 +24,46 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter()
 
   const checkStatus = useCallback(async () => {
-    // TODO: API route fix
-    const response = await axios.get('/whoami', {
-      withCredentials: true
-    })
-    setState(prev => ({
-      ...prev,
-      isLoggedIn: !!response.data.data,
-      user: response.data.data,
-      error: null
-    }))
+    const token = localStorage.getItem('token')
+    if (token)
+      setState({
+        user: token,
+        isLoggedIn: true,
+        userType: 'Contractor',
+        error: null
+      })
   }, [])
 
   useEffect(() => {
-    setLoading(true)
-    checkStatus().catch(err => {
-      setState(prev => ({
-        ...prev,
-        error: err?.response?.data?.error || 'Something went wrong'
-      }))
-    })
-    setLoading(false)
+    checkStatus()
   }, [checkStatus])
+
+  // useEffect(() => {
+  //   setLoading(true)
+  //   checkStatus().catch(err => {
+  //     setState(prev => ({
+  //       ...prev,
+  //       error: err?.response?.data?.error || 'Something went wrong'
+  //     }))
+  //   })
+  //   setLoading(false)
+  // }, [checkStatus])
 
   const login = useCallback(
     creds => {
       setLoading(true)
       axios
-        .post('/auth/login', creds, {
-          withCredentials: true
-        })
-        .then(_ => {
-          checkStatus()
-          router.reload()
+        .post('/login', creds, {})
+        .then(res => {
+          console.log(res.data.token)
+          localStorage.setItem('token', res.data.token)
+          setState(prev => ({
+            ...prev,
+            isLoggedIn: true,
+            user: res.data.token,
+            userType: 'Contractor'
+          }))
+          router.push('/dashboard/')
         })
         .catch(err => {
           setState(prev => ({
@@ -68,7 +73,7 @@ export const AuthProvider = ({ children }) => {
         })
       setLoading(false)
     },
-    [checkStatus, router]
+    [router]
   )
 
   const logout = useCallback(() => {
@@ -97,11 +102,12 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async creds => {
     setLoading(true)
     axios
-      .post('/auth/register', {
+      .post('/createworkerr', {
         ...creds
       })
-      .then(_ => {
+      .then(res => {
         // TODO: Umm do something here
+        console.log(res)
       })
   }, [])
 

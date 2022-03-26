@@ -1,4 +1,3 @@
-// ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Button from '@mui/material/Button'
@@ -6,41 +5,45 @@ import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
-import { FormControl, FormControlLabel, FormHelperText, Radio, RadioGroup } from '@mui/material'
-
-// ** Icons Imports
-import AccountOutline from 'mdi-material-ui/AccountOutline'
-import MessageOutline from 'mdi-material-ui/MessageOutline'
 import { useFormik } from 'formik'
-import * as yup from 'yup'
-import { Email } from 'mdi-material-ui'
-import { useAuth } from 'src/hooks/useAuth'
+import { AccountOutline, FormatLineSpacing, MessageOutline, Phone } from 'mdi-material-ui'
+import { useMutation } from 'react-query'
+import { useState } from 'react'
+import { axios } from 'src/axios'
 
-const registerSchema = yup.object().shape({
-  name: yup.string().required('Name is required'),
-  email: yup.string().email('Email is not valid').required('Email is required'),
-  password: yup.string().min(3, 'Password must be atleast 3 characters long').required('Password is required')
-})
+const AddWorker = () => {
+  const { mutateAsync } = useMutation(
+    async values => {
+      const response = await axios.post('/createworker', values)
 
-const RegisterForm = () => {
-  const { register } = useAuth()
+      return response.data
+    },
+    {
+      onSuccess: _ => {
+        console.log('Woo')
+      }
+    }
+  )
 
   const formik = useFormik({
     initialValues: {
       name: '',
-      password: '',
-      email: '',
+      phone: '',
       aadhar: '',
-      type: 'Contractor'
+      password: '',
+      photo: null
     },
-    validationSchema: registerSchema,
-    onSubmit: async ({ name, password, email, aadhar }, actions) => {
-      // TODO: Implement register
-      register({
-        name,
-        email,
-        password,
-        aadhar
+    onSubmit: async (values, actions) => {
+      await mutateAsync({
+        ...values,
+        photo: values.photo.name
+      })
+      actions.resetForm({
+        name: '',
+        phone: '',
+        aadhar: '',
+        password: '',
+        photo: null
       })
     }
   })
@@ -73,17 +76,17 @@ const RegisterForm = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                id='email'
-                value={formik.values.email}
+                id='phone'
+                value={formik.values.phone}
                 onChange={formik.handleChange}
-                label='Email'
-                placeholder='Enter your email...'
-                error={formik.touched.email && !!formik.errors.email}
-                helperText={formik.touched.email && formik.errors.email}
+                label='Phone'
+                placeholder='Enter your phone no...'
+                error={formik.touched.phone && !!formik.errors.phone}
+                helperText={formik.touched.phone && formik.errors.phone}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position='start'>
-                      <Email />
+                      <Phone />
                     </InputAdornment>
                   )
                 }}
@@ -95,27 +98,15 @@ const RegisterForm = () => {
                 id='aadhar'
                 value={formik.values.aadhar}
                 onChange={formik.handleChange}
-                label='Email'
+                label='Aadhar No.'
                 placeholder='Enter your aadhar no...'
                 error={formik.touched.aadhar && !!formik.errors.aadhar}
                 helperText={formik.touched.aadhar && formik.errors.aadhar}
                 InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <Email />
-                    </InputAdornment>
-                  )
+                  startAdornment: <InputAdornment position='start'></InputAdornment>
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormHelperText>Account Type</FormHelperText>
-              <RadioGroup name='type' value={formik.values.type} onChange={formik.handleChange}>
-                <FormControlLabel value='Contractor' control={<Radio />} label='Contractor' />
-                <FormControlLabel value='Owner' control={<Radio />} label='Owner' />
-              </RadioGroup>
-            </Grid>
-
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -138,6 +129,10 @@ const RegisterForm = () => {
               />
             </Grid>
             <Grid item xs={12}>
+              <input type='file' name='photo' onChange={e => formik.setFieldValue('photo', e.target.files[0])} />
+              {formik.values.photo && <ImagePreview file={formik.values.photo} />}
+            </Grid>
+            <Grid item xs={12}>
               <Button type='submit' variant='contained' size='large'>
                 Submit
               </Button>
@@ -149,4 +144,13 @@ const RegisterForm = () => {
   )
 }
 
-export default RegisterForm
+const ImagePreview = ({ file }) => {
+  const [img, setImg] = useState(null)
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => setImg(reader.result)
+
+  return img && <image alt={'Image'} width='500px' height='500px' src={img} />
+}
+
+export default AddWorker

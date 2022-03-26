@@ -14,6 +14,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { aadharVerify } from 'src/utils/aadharVerify'
 import { Email } from 'mdi-material-ui'
+import { useAuth } from 'src/hooks/useAuth'
 
 const loginSchema = yup.object().shape({
   email: yup.string().email('Email is not valid').required('Email is required'),
@@ -21,22 +22,22 @@ const loginSchema = yup.object().shape({
 })
 
 const LoginForm = () => {
+  const { login } = useAuth()
+
   const formik = useFormik({
     initialValues: {
       email: '',
       password: ''
     },
     validationSchema: loginSchema,
-    validate: values => {
-      if (!aadharVerify(values.aadhar)) {
-        return {
-          aadhar: 'Not a valid aadhar number'
-        }
-      }
-    },
-    onSubmit: (values, actions) => {
+    onSubmit: async ({ email, password }, actions) => {
       // TODO: Implement login
-      console.log(values)
+      actions.setSubmitting(true)
+      login({
+        email,
+        password
+      })
+      actions.setSubmitting(false)
     }
   })
 

@@ -1,4 +1,6 @@
 import { Grid } from '@mui/material'
+import { useEffect } from 'react'
+import { useDebounce } from 'rooks'
 import { StatisticsCard } from 'src/components/StatisticsCard'
 import { useAuth } from 'src/hooks/useAuth'
 import { useAuthRedirect } from 'src/hooks/useAuthRedirect'
@@ -13,8 +15,8 @@ import { useAuthRedirect } from 'src/hooks/useAuthRedirect'
  */
 
 const Dashboard = () => {
-  useAuthRedirect()
   const { userType } = useAuth()
+  useDebounce(useAuthRedirect, 1000)
 
   if (userType === 'Contractor') {
     return <Grid>Contractor Dashboard</Grid>
