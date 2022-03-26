@@ -19,8 +19,8 @@ const Workers = () => {
             <CardMedia
               align='center'
               component='img'
-              height='140'
-              image='/static/images/cards/contemplative-reptile.jpg'
+              height='180'
+              image={`/images/image/${worker.photo}`}
               alt='image of worker'
             />
             <CardContent>

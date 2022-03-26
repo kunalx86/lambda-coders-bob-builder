@@ -4,11 +4,6 @@ import React from 'react'
 import Typography from '@mui/material/Typography'
 
 const MapContainer = props => {
-  const list = [
-    { title: 'hello', name: 'boma', lat: '37.778519', log: '-123.405640' },
-    { title: 'hee', name: 'SOMA', lat: '37.778519', log: '-122.405640' }
-  ]
-
   const location = useGeolocation()
 
   return (
