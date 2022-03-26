@@ -6,10 +6,11 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useFormik } from 'formik'
-import { AccountOutline, FormatLineSpacing, MessageOutline, Phone } from 'mdi-material-ui'
+import { AccountOutline, Phone } from 'mdi-material-ui'
 import { useMutation } from 'react-query'
 import { useState } from 'react'
 import { axios } from 'src/axios'
+import { aadharVerify } from 'src/utils/aadharVerify'
 
 const AddWorker = () => {
   const { mutateAsync } = useMutation(
@@ -30,8 +31,14 @@ const AddWorker = () => {
       name: '',
       phone: '',
       aadhar: '',
-     
       photo: null
+    },
+    validate: ({ aadhar }) => {
+      if (!aadharVerify(aadhar)) {
+        return {
+          aadhar: 'Not a valid aadhar number'
+        }
+      }
     },
     onSubmit: async (values, actions) => {
       await mutateAsync({
@@ -42,7 +49,6 @@ const AddWorker = () => {
         name: '',
         phone: '',
         aadhar: '',
-       
         photo: null
       })
     }
@@ -107,7 +113,6 @@ const AddWorker = () => {
                 }}
               />
             </Grid>
-
             <Grid item xs={12}>
               <input type='file' name='photo' onChange={e => formik.setFieldValue('photo', e.target.files[0])} />
               {formik.values.photo && <ImagePreview file={formik.values.photo} />}

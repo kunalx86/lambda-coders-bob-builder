@@ -49,6 +49,11 @@ export const useNavigation = () => {
           title: 'Maps',
           icon: ViewDashboard,
           path: '/map'
+        },
+        {
+          title: 'Payments',
+          icon: ViewDashboard,
+          path: '/payment'
         }
       ])
     } else {
