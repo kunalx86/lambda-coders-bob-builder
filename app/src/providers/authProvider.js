@@ -77,27 +77,15 @@ export const AuthProvider = ({ children }) => {
   )
 
   const logout = useCallback(() => {
-    setLoading(true)
-    axios
-      .post(
-        '/auth/logout',
-        {},
-        {
-          withCredentials: true
-        }
-      )
-      .then(_ => {
-        checkStatus()
-        router.reload()
-      })
-      .catch(err => {
-        setState(prev => ({
-          ...prev,
-          error: err?.response?.data?.error || 'Something went wrong'
-        }))
-      })
-    setLoading(false)
-  }, [checkStatus, router])
+    localStorage.removeItem('token')
+    setState(prev => ({
+      ...prev,
+      isLoggedIn: false,
+      user: null,
+      userType: null
+    }))
+    router.push('/')
+  }, [router])
 
   const register = useCallback(async creds => {
     setLoading(true)

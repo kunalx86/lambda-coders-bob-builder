@@ -1,5 +1,5 @@
 import { Grid, Card, CardMedia, CardContent, Button } from '@mui/material'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import Typography from '@mui/material/Typography/'
 import { axios } from 'src/axios'
 
@@ -10,11 +10,26 @@ const Workers = () => {
     return response.data
   })
 
+  const queryClient = useQueryClient()
+
+  const { mutateAsync } = useMutation(
+    async values => {
+      const response = await axios.put('/updateproject', values)
+
+      return response.data
+    },
+    {
+      onSettled: _ => {
+        queryClient.invalidateQueries(['workers'])
+      }
+    }
+  )
+
   return (
     <Grid alignSelf='center' container rowSpacing={10} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       {status === 'loading' && 'Loading...'}
       {(data || []).map(worker => (
-        <Grid ml={1} alignItems='center' item xs={8} sm={4} key={worker.p_id}>
+        <Grid ml={5} alignItems='center' item xs={4} sm={2} key={worker.p_id}>
           <Card sx={{ maxWidth: 345 }} align='center'>
             <CardMedia
               align='center'
@@ -25,14 +40,24 @@ const Workers = () => {
             />
             <CardContent>
               <Typography gutterBottom variant='h5' component='div' align='center'>
+                {worker.Name}
+              </Typography>
+              <Typography gutterBottom variant='h5' component='div' align='center'>
                 {worker.name_worker}
               </Typography>
               <Typography variant='body2' color='text.secondary' align='center'>
                 Safety - {worker.safty_status} <br />
-                Daily Working Average - {worker.attendance} <br />
+                Attendance - {worker.attendance} <br />
               </Typography>
-              <Button disabled={!(worker.project_name === '')} mt={2} p={2}>
-                {worker.project_name === '' ? 'Hire!' : worker.project_name}
+              <Button
+                onClick={async e => {
+                  await mutateAsync(worker)
+                }}
+                disabled={!(worker.project_name === '' || worker.project_name === null)}
+                mt={2}
+                p={2}
+              >
+                {worker.project_name === '' || worker.project_name === null ? 'Hire!' : worker.project_name}
               </Button>
             </CardContent>
           </Card>

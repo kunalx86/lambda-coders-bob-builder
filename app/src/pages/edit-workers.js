@@ -37,7 +37,7 @@ const EditWorker = () => {
     <Grid>
       <TableContainer
         sx={{
-          width: 600
+          width: 1000
         }}
       >
         <Table aria-label='simple table'>
@@ -48,7 +48,7 @@ const EditWorker = () => {
               <TableCell align='right'>Attendance</TableCell>
               <TableCell align='right'>Basic Salary</TableCell>
               <TableCell align='right'>Safety Status</TableCell>
-              <TableCell>Delete</TableCell>
+              <TableCell align='center'>Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
