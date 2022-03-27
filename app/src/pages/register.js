@@ -16,6 +16,7 @@ import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { Email } from 'mdi-material-ui'
 import { useAuth } from 'src/hooks/useAuth'
+import { aadharVerify } from 'src/utils/aadharVerify'
 
 const registerSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -35,6 +36,13 @@ const RegisterForm = () => {
       type: 'Contractor'
     },
     validationSchema: registerSchema,
+    validate: ({ aadhar }) => {
+      if (!aadharVerify(aadhar)) {
+        return {
+          aadhar: 'Not a valid aadhar number'
+        }
+      }
+    },
     onSubmit: async ({ name, password, email, aadhar }, actions) => {
       // TODO: Implement register
       register({

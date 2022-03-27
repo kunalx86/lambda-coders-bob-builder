@@ -62,7 +62,6 @@ const App = props => {
       </Head>
 
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
         <AuthProvider>
           <SettingsProvider>
             <SettingsConsumer>
