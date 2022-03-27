@@ -10,6 +10,7 @@ import { AccountOutline, Phone } from 'mdi-material-ui'
 import { useMutation } from 'react-query'
 import { useState } from 'react'
 import { axios } from 'src/axios'
+import { aadharVerify } from 'src/utils/aadharVerify'
 
 const AddWorker = () => {
   const { mutateAsync } = useMutation(
@@ -31,6 +32,13 @@ const AddWorker = () => {
       phone: '',
       aadhar: '',
       photo: null
+    },
+    validate: ({ aadhar }) => {
+      if (!aadharVerify(aadhar)) {
+        return {
+          aadhar: 'Not a valid aadhar number'
+        }
+      }
     },
     onSubmit: async (values, actions) => {
       await mutateAsync({
