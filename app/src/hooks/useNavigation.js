@@ -20,14 +20,14 @@ export const useNavigation = () => {
     if (isLoggedIn) {
       setNavItems(prev => [
         {
-          title: 'Workload',
-          icon: DateRangeIcon,
-          path: '/workload-management'
-        },
-        {
           title: 'Workers',
           icon: PermContactCalendarIcon,
           path: '/workers'
+        },
+        {
+          title: 'Workload',
+          icon: DateRangeIcon,
+          path: '/workload-management'
         },
         {
           title: 'Add Worker',
