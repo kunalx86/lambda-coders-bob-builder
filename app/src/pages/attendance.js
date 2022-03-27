@@ -10,11 +10,31 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import Tesseract from 'tesseract.js'
 import { Loading } from 'mdi-material-ui'
+import { useQuery, useQueryClient } from 'react-query'
+import { axios } from 'src/axios'
 
 function BasicTable() {
   const [file, setFile] = React.useState(null)
   const [loading, setLoading] = React.useState(false)
   const [texts, setTexts] = React.useState([])
+  const [checks, setChecks] = React.useState([])
+
+  const { data, isLoading } = useQuery('workers', async () => {
+    const response = await axios.get('/getworker')
+
+    return response.data
+  })
+
+  const queryClient = useQueryClient()
+
+  React.useEffect(() => {
+    setChecks(Array.from({ length: (data || []).length }).fill(false))
+  }, [data])
+
+  const handleSubmit = () => {
+    queryClient.setQueryData('workers', [])
+    setTexts([])
+  }
 
   return (
     <>
@@ -33,13 +53,18 @@ function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {[].map(row => (
-                <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              {(data || []).map((row, idx) => (
+                <TableRow key={row.w_id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component='th' scope='row'>
-                    {row.name}
+                    {row.Name}
                   </TableCell>
                   <TableCell component='th' scope='row'>
-                    <Checkbox />
+                    <Checkbox
+                      value={checks[idx]}
+                      onChange={e => {
+                        setChecks(prev => prev.map((check, i) => (i === idx ? !check : check)))
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
@@ -71,7 +96,7 @@ function BasicTable() {
         >
           Perform OCR
         </Button>
-        <Button onClick={() => setText('')}>Clear Results</Button>
+        <Button onClick={() => setTexts([])}>Clear Results</Button>
         {loading ? (
           <Loading />
         ) : (
@@ -106,6 +131,7 @@ function BasicTable() {
             </Table>
           </TableContainer>
         )}
+        <Button onClick={() => handleSubmit()}>Post Attendance</Button>
       </Stack>
     </>
   )

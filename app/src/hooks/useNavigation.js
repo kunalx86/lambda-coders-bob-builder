@@ -2,6 +2,15 @@ import { useEffect, useState } from 'react'
 import { useAuth } from './useAuth'
 import Login from 'mdi-material-ui/Login'
 import { AccountPlusOutline, ViewDashboard } from 'mdi-material-ui'
+import MyLocationIcon from '@mui/icons-material/MyLocation'
+import PaymentIcon from '@mui/icons-material/Payment'
+import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar'
+import ConstructionIcon from '@mui/icons-material/Construction'
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded'
+import DateRangeIcon from '@mui/icons-material/DateRange'
+import EditIcon from '@mui/icons-material/Edit'
+import SecurityIcon from '@mui/icons-material/Security'
 
 export const useNavigation = () => {
   const { isLoggedIn, user } = useAuth()
@@ -11,49 +20,54 @@ export const useNavigation = () => {
     if (isLoggedIn) {
       setNavItems(prev => [
         {
-          title: 'Dashboard',
-          icon: ViewDashboard,
-          path: '/dashboard'
-        },
-        {
           title: 'Workload',
-          icon: ViewDashboard,
+          icon: DateRangeIcon,
           path: '/workload-management'
         },
         {
           title: 'Workers',
-          icon: ViewDashboard,
+          icon: PermContactCalendarIcon,
           path: '/workers'
         },
         {
           title: 'Add Worker',
-          icon: ViewDashboard,
+          icon: PersonAddIcon,
           path: '/add-worker'
         },
         {
           title: 'Edit Workers',
-          icon: ViewDashboard,
+          icon: EditIcon,
           path: '/edit-workers'
         },
         {
-          title: 'Projects',
-          icon: ViewDashboard,
-          path: '/projects'
-        },
-        {
           title: 'Attendance',
-          icon: ViewDashboard,
+          icon: BookmarkAddedIcon,
           path: '/attendance'
         },
         {
-          title: 'Maps',
-          icon: ViewDashboard,
-          path: '/map'
+          title: 'Worker Protection',
+          icon: SecurityIcon,
+          path: '/protection'
         },
         {
           title: 'Payments',
-          icon: ViewDashboard,
+          icon: PaymentIcon,
           path: '/payment'
+        },
+        {
+          title: 'Projects',
+          icon: ConstructionIcon,
+          path: '/projects'
+        },
+        {
+          title: 'Maps',
+          icon: MyLocationIcon,
+          path: '/map'
+        },
+        {
+          title: 'Dashboard',
+          icon: ViewDashboard,
+          path: '/dashboard'
         }
       ])
     } else {

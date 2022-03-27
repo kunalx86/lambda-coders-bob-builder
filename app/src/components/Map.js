@@ -2,12 +2,21 @@ import { Map, Marker, GoogleApiWrapper } from 'google-maps-react'
 import { useGeolocation } from 'rooks'
 import React from 'react'
 import Typography from '@mui/material/Typography'
+import { useQuery } from 'react-query'
+import { axios } from 'src/axios'
 
 const MapContainer = props => {
   const location = useGeolocation()
 
+  const { data, isLoading } = useQuery('projects', async () => {
+    const response = await axios.get('/getproject')
+
+    return response.data
+  })
+
   return (
     <>
+      <Typography variant='h2'>Project Locations</Typography>
       {location && location.isError && (
         <Typography>The feature is not possible without allowing Location permission</Typography>
       )}
@@ -25,7 +34,18 @@ const MapContainer = props => {
         google={props.google}
         zoom={14}
         style={{ width: '60%', height: '60%', position: 'relative' }}
-      ></Map>
+      >
+        {!isLoading &&
+          (data || []).map(project => (
+            <Marker
+              key={project.w_id}
+              position={{
+                lat: project.longitude,
+                lng: project.latitude
+              }}
+            />
+          ))}
+      </Map>
     </>
   )
 }

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useQuery } from 'react-query'
+import { axios } from 'src/axios'
 import { Grid, Button } from '@mui/material'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
@@ -40,7 +42,7 @@ async function displayRazorpay(amount, name) {
   const options = {
     key: 'rzp_test_plSZYOKdoMS8rp',
     currency: 'INR',
-    amount,
+    amount: amount * 100,
     name: 'Monthly Wages',
     description: `Wages for ${name}`,
     handler: function (response) {
@@ -103,13 +105,18 @@ const Row = props => {
           </IconButton>
         </TableCell>
         <TableCell component='th' scope='row'>
-          {row.name}
+          {row.Name}
         </TableCell>
-        <TableCell align='right'>{row.calories}</TableCell>
-        <TableCell align='right'>{row.fat}</TableCell>
-        <TableCell align='right'>{row.carbs}</TableCell>
+        <TableCell align='right'>{row['basic salary']}</TableCell>
+        <TableCell align='right'>{row.incentivesalary}</TableCell>
+        <TableCell align='right'>{parseInt(row.incentivesalary) + parseInt(row['basic salary'])}</TableCell>
         <TableCell align='right'>
-          <Button onClick={() => displayRazorpay(5000, 'Boii')}>Sanction Wages</Button>
+          <Button
+            variant='outlined'
+            onClick={() => displayRazorpay(parseInt(row.incentivesalary) + parseInt(row['basic salary']), row.Name)}
+          >
+            Sanction Wages
+          </Button>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -117,7 +124,7 @@ const Row = props => {
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ m: 2 }}>
               <Typography variant='h6' gutterBottom component='div'>
-                History
+                Details
               </Typography>
               <Table size='small' aria-label='purchases'>
                 <TableHead>
@@ -128,15 +135,13 @@ const Row = props => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map(historyRow => (
-                    <TableRow key={historyRow.date}>
-                      <TableCell component='th' scope='row'>
-                        {historyRow.date}
-                      </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align='right'>{historyRow.amount}</TableCell>
-                    </TableRow>
-                  ))}
+                  <TableRow key={row.w_id}>
+                    <TableCell component='th' scope='row'>
+                      {row.safty_status}
+                    </TableCell>
+                    <TableCell>{row.avghoursmonth}</TableCell>
+                    <TableCell align='right'>{row.attendance}</TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </Box>
@@ -156,6 +161,12 @@ const rows = [
 ]
 
 const TableCollapsible = () => {
+  const { data, status } = useQuery('workers', async () => {
+    const response = await axios.get('/getworker')
+
+    return response.data
+  })
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label='collapsible table'>
@@ -170,8 +181,8 @@ const TableCollapsible = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <Row key={row.name} row={row} />
+          {(data || []).map(row => (
+            <Row key={row.w_id} row={row} />
           ))}
         </TableBody>
       </Table>
