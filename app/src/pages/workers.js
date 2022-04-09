@@ -3,11 +3,17 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 import Typography from '@mui/material/Typography/'
 import { axios } from 'src/axios'
 
-const Workers = () => {
-  const { data, status } = useQuery('workers', async () => {
-    const response = await axios.get('/getworker')
+import { FormControl, Grid, TextField, Button, Card, CardMedia, CardContent } from '@mui/material'
+import { useFormik } from 'formik'
+import { useDebounce } from 'rooks'
+import { useAuthRedirect } from 'src/hooks/useAuthRedirect'
 
-    return response.data
+const Workers = () => {
+  const { data, status } = useQuery('projects', async () => {
+    const response = await axios.get('/getproject');
+ 
+
+    return response.data;
   })
 
   const queryClient = useQueryClient()
@@ -62,8 +68,10 @@ const Workers = () => {
             </CardContent>
           </Card>
         </Grid>
-      ))}
+        ))
+      }
     </Grid>
+    
   )
 }
 

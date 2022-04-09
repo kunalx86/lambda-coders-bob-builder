@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
   const register = useCallback(async creds => {
     setLoading(true)
     axios
-      .post('/createworkerr', {
+      .post('/createcontractors', {
         ...creds
       })
       .then(res => {
